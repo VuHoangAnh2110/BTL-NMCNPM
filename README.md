@@ -15,13 +15,11 @@ Dự án này là một sàn giao dịch việc làm trực tuyến, giúp kết
   - Nộp đơn xin việc và nhận thông báo tuyển dụng
 
 - 🌐 **Tính năng khác:**
-  - Hỗ trợ AI gợi ý công việc phù hợp
-  - Hệ thống đánh giá và bình luận
-  - Quản lý lưu lượng tuyển dụng
+  - . . . 
 
 ## Công Nghệ Sử Dụng
-- **Back-end:** PHP (CodeIgniter 4), Node.js
-- **Front-end:** HTML, CSS, JavaScript (React, Bootstrap 5)
+- **Back-end:** ASP.NET Core MVC 8
+- **Front-end:** HTML, CSS, JavaScript (Bootstrap 5)
 - **Cơ sở dữ liệu:** MySQL, PostgreSQL
 - **Authentication:** OAuth 2.0, JWT
 - **Hỗ trợ gửi mail:** PHPMailer
@@ -29,8 +27,7 @@ Dự án này là một sàn giao dịch việc làm trực tuyến, giúp kết
 
 ## Cài Đặt
 ### Yêu cầu hệ thống
-- PHP 8.1+
-- Composer
+- .NET 8 SDK
 - Node.js 18+
 - MySQL hoặc PostgreSQL
 - Docker (tùy chọn)
@@ -43,17 +40,17 @@ Dự án này là một sàn giao dịch việc làm trực tuyến, giúp kết
    ```
 2. Cài đặt dependencies:
    ```sh
-   composer install
+   dotnet restore
    npm install
    ```
 3. Cấu hình môi trường:
-   - Sao chép file `.env.example` thành `.env` và chỉnh sửa thông tin kết nối database.
+   - Sao chép file `appsettings.example.json` thành `appsettings.json` và chỉnh sửa thông tin kết nối database.
 4. Chạy ứng dụng:
    ```sh
-   php spark serve
+   dotnet run
    npm start
    ```
-5. Truy cập ứng dụng tại: `http://localhost:8000`
+5. Truy cập ứng dụng tại: `http://localhost:5000`
 
 ## Đóng Góp
 Chúng tôi hoan nghênh mọi đóng góp! Hãy fork repo, tạo branch mới, commit thay đổi và gửi pull request.
@@ -62,6 +59,6 @@ Chúng tôi hoan nghênh mọi đóng góp! Hãy fork repo, tạo branch mới, 
 Dự án này được phát hành dưới giấy phép MIT.
 
 ## Liên Hệ
-- **Email:** support@example.com
-- **Website:** https://yourwebsite.com
+- **Email:** G13.NMCNPM@gmail.com
+- **Website:** https://G13-Website.com
 
