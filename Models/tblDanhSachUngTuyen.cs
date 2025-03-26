@@ -8,17 +8,20 @@ namespace BTL_NMCNPM.Models
         [Key]
         public int iMaDanhsach { get; set; }
 
-        public string sMaTD { get; set; }
+        [Required]
+        public string sMaTD { get; set; } = null!;
 
-        public string sMaNV { get; set; }
+        [Required]
+        public string sMaNV { get; set; } = null!;
 
+        // Thiết lập quan hệ với tblNhanVien
         [ForeignKey("sMaNV")]
-        public virtual tblNhanVien tblNhanVien { get; set; }
+        public virtual tblNhanVien tblNhanVien { get; set; } = null!;
 
+        // Thiết lập quan hệ với tblThongTinTuyenDung
         [ForeignKey("sMaTD")]
-        public virtual tblThongTinTuyenDung tblThongTinTuyenDung { get; set; }
+        public virtual tblThongTinTuyenDung tblThongTinTuyenDung { get; set; } = null!;
 
-        public tblHoSoNhanVien? tblHoSoNhanVien { get; set; } // Đảm bảo có navigation property
-
+        // Không cần tham chiếu trực tiếp tới tblHoSoNhanVien
     }
 }

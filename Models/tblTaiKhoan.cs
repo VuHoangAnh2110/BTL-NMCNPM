@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BTL_NMCNPM.Models
 {
     public class tblTaiKhoan
     {
+        [Key]
         public string sMaTK { get; set; }
         public string sMaQuyen { get; set; }
         public string sTaiKhoan { get; set; }

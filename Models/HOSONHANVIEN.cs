@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BTL_NMCNPM.Models
 {
     public class HOSONHANVIEN
     {
+        [Key]
         public int MAHOSO { get; set; }
         public string TENNHANVIEN { get; set; }
         public DateTime? NGAYLAP { get; set; }

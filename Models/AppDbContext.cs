@@ -28,10 +28,10 @@ namespace BTL_NMCNPM.Data
                 .WithMany(nv => nv.tblHoSoNhanVien)
                 .HasForeignKey(hs => hs.sMaNV);
 
-            modelBuilder.Entity<tblDanhSachUngTuyen>()
-                .HasOne(d => d.tblHoSoNhanVien)
-                .WithMany(hs => hs.tblDanhSachUngTuyen)
-                .HasForeignKey(d => d.sMaNV);
+            // modelBuilder.Entity<tblDanhSachUngTuyen>()
+            //     .HasOne(d => d.tblHoSoNhanVien)
+            //     .WithMany(hs => hs.tblDanhSachUngTuyen)
+            //     .HasForeignKey(d => d.sMaNV);
 
         }
     }
