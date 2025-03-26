@@ -1,0 +1,65 @@
+﻿@model BTL_CNPM.Models.tblThongTinTuyenDung
+@{
+    Layout = "~/Views/Shared/HomeMasterpage.cshtml";
+}
+
+
+<!-- Job Detail Start -->
+<div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="row gy-5 gx-4">
+            <div class="col-lg-8">
+
+                <div class="d-flex align-items-center mb-5">
+                    <img class="flex-shrink-0 img-fluid border rounded" src="~/Assets/img/cmc.jpg" alt="" style="width: 80px; height: 80px;">
+                    <div class="text-start ps-4">
+                        <h3 class="mb-3">@Model.sVitri</h3>
+                        <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.sNoilamviec</span>
+                        <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>@Model.iMucluong</span>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+
+                    <h4 class="mb-3">Đối tượng tuyển dụng</h4>
+                    <p>@Model.sDoituong</p>
+
+                    <h4 class="mb-3">Mô tả công việc</h4>
+                    <p>@Model.sMotaTD</p>
+
+                    <h4 class="mb-3">Đãi ngộ</h4>
+                    <p>@Model.sDaingo</p>
+
+                </div>
+
+                <form>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <a class="btn btn-primary w-100" href="/Home/ThemDanhSachUngTuyen?sMaTD=@Model.sMaTD">Nộp đơn</a>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="col-lg-4">
+@*                <div class="bg-light rounded p-5 mb-4 wow slideInUp" data-wow-delay="0.1s">
+                    <h4 class="mb-4">Job Summery</h4>
+                    <p><i class="fa fa-angle-right text-primary me-2"></i>Published On: 01 Jan, 2045</p>
+                    <p><i class="fa fa-angle-right text-primary me-2"></i>Vacancy: 123 Position</p>
+                    <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Full Time</p>
+                    <p><i class="fa fa-angle-right text-primary me-2"></i>Salary: $123 - $456</p>
+                    <p><i class="fa fa-angle-right text-primary me-2"></i>Location: New York, USA</p>
+                    <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Date Line: 01 Jan, 2045</p>
+                </div>*@
+                <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                    <h4 class="mb-4">Giới thiệu công ty OSP</h4>
+                    <p class="m-0">OSP Group là một trong những tập đoàn công nghệ hàng đầu tại Việt Nam, hoạt động chủ yếu trong lĩnh vực
+                    công nghệ thông tin và truyền thông. OSP Group được biết đến với sứ mệnh "Vì một cuộc sống tốt đẹp hơn thông qua công nghệ",
+                    và họ đã xây dựng nên một hệ sinh thái công nghệ đa dạng và phát triển</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Job Detail End -->

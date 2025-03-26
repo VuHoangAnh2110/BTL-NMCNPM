@@ -31,8 +31,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Sử dụng Session
+app.UseSession();
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();

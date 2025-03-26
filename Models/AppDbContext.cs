@@ -1,6 +1,5 @@
-
-using Microsoft.EntityFrameworkCore;
 using BTL_NMCNPM.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BTL_NMCNPM.Data
 {
@@ -8,8 +7,23 @@ namespace BTL_NMCNPM.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-       
-    }
+        public DbSet<HOSONHANVIEN> HOSONHANVIEN { get; set; }
+        public DbSet<tblTaiKhoan> tblTaiKhoan { get; set; }
+        public DbSet<tblNhanVien> tblNhanVien { get; set; }
+        public DbSet<tblHoSoNhanVien> tblHoSoNhanVien { get; set; }
+        public DbSet<tblThongTinTuyenDung> tblThongTinTuyenDung { get; set; }
 
-    
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<tblNhanVien>()
+                .HasOne(nv => nv.tblTaiKhoan)
+                .WithMany(tk => tk.tblNhanVien)
+                .HasForeignKey(nv => nv.sMaTK);
+
+            modelBuilder.Entity<tblHoSoNhanVien>()
+                .HasOne(hs => hs.tblNhanVien)
+                .WithMany(nv => nv.tblHoSoNhanVien)
+                .HasForeignKey(hs => hs.sMaNV);
+        }
+    }
 }
