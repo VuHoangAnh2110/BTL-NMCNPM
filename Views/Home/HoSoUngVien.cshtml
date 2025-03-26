@@ -1,61 +1,65 @@
-﻿@model BTL_CNPM.Models.tblHoSoNhanVien
+﻿@model BTL_NMCNPM.Models.tblHoSoNhanVien
+@inject IHttpContextAccessor HttpContextAccessor
+
 @{
-    ViewBag.Title = "HoSoUngVien";
-    var MaTK = Session["MaTk"];
+    ViewData["Title"] = "Hồ sơ ứng viên";
+    var MaTK = HttpContextAccessor.HttpContext?.Session.GetString("MaTk") ?? "0";
     string MaNV = "NV" + MaTK;
-    Layout = "~/Views/Shared/HomeMasterpage.cshtml";
+    Layout = "~/Views/Shared/HomeLayout.cshtml";
 }
 
 <h2 class="text-center">Hồ sơ ứng viên</h2>
-<form class="" action="/Home/HoSoUngVien" method="post">
-    <input type="hidden" class="form-control" name="sMaNV" value="@MaNV" />
+
+<form asp-controller="Home" asp-action="HoSoUngVien" method="post">
+    <input type="hidden" class="form-control" asp-for="sMaNV" value="@MaNV" />
 
     <div class="row mx-3 mt-3">
         <div class="col-md-6">
             <label for="tennhanvien">Tên nhân viên</label>
-            <input type="text" class="form-control" id="tennhanvien" name="sTenNV" placeholder="Tên nhân viên" value="@Model.sTenNV"/>
+            <input type="text" class="form-control" id="tennhanvien" asp-for="sTenNV" placeholder="Tên nhân viên"/>
         </div>
         <div class="col-md-6">
             <label for="email">Email</label>
-            <input type="text" class="form-control" id="email" name="sEmail" placeholder="Email" value="@Model.sEmail"/>
+            <input type="text" class="form-control" id="email" asp-for="sEmail" placeholder="Email"/>
         </div>
     </div>
 
     <div class="row mx-3 mt-3">
         <div class="col-md-6">
             <label for="CCCD">CCCD</label>
-            <input type="text" class="form-control" id="CCCD" name="iCCCD" placeholder="CCCD" value="@Model.iCCCD"/>
+            <input type="text" class="form-control" id="CCCD" asp-for="iCCCD" placeholder="CCCD"/>
         </div>
         <div class="col-md-6">
             <label for="ngaysinh">Ngày sinh</label>
-            <input type="date" class="form-control" id="ngaysinh" name="dNgaysinh" placeholder="Ngày sinh" value="@Model.dNgaysinh.Value.ToString("yyyy-MM-dd")"/>
+            <input type="date" class="form-control" id="ngaysinh" asp-for="dNgaysinh" 
+                   value="@(Model.dNgaysinh.HasValue ? Model.dNgaysinh.Value.ToString("yyyy-MM-dd") : "")"/>
         </div>
     </div>
 
     <div class="row mx-3 mt-3">
         <div class="col-md-6">
             <label for="SDT">Số điện thoại</label>
-            <input type="text" class="form-control" id="SDT" name="iSDT" placeholder="Số điện thoại" value="@Model.iSDT"/>
+            <input type="text" class="form-control" id="SDT" asp-for="iSDT" placeholder="Số điện thoại"/>
         </div>
         <div class="col-md-6">
             <label for="diachi">Địa chỉ</label>
-            <input type="text" class="form-control" id="diachi" name="sDiachi" placeholder="Địa chỉ" value="@Model.sDiachi"/>
+            <input type="text" class="form-control" id="diachi" asp-for="sDiachi" placeholder="Địa chỉ"/>
         </div>
     </div>
 
     <div class="row mx-3 mt-3">
         <div class="col-md-6">
             <label for="hocvan">Học vấn và kỹ năng</label>
-            <input type="text" class="form-control" id="hocvan" name="sHocvan" placeholder="Học vấn và kỹ năng" value="@Model.sHocvan"/>
+            <input type="text" class="form-control" id="hocvan" asp-for="sHocvan" placeholder="Học vấn và kỹ năng"/>
         </div>
         <div class="col-md-6">
             <label for="kinhnghiem">Kinh nghiệm và thành tích</label>
-            <input type="text" class="form-control" id="kinhnghiem" name="sKinhnghiem" placeholder="Kinh nghiệm và thành tích" value="@Model.sKinhnghiem"/>
+            <input type="text" class="form-control" id="kinhnghiem" asp-for="sKinhnghiem" placeholder="Kinh nghiệm và thành tích"/>
         </div>
     </div>
 
-    <a class="btn btn-primary mt-3 mx-3" style="color: white; text-decoration: none;" href="/Home/EditHoSo/@Model.sMaNV">Chỉnh sửa</a>
-    <button type="submit" class="text-center btn btn-success mt-3 mx-3">Xác nhận</button>
+    <a class="btn btn-primary mt-3 mx-3 text-white text-decoration-none" asp-controller="Home" asp-action="EditHoSo" asp-route-sMaNV="@Model.sMaNV">
+        Chỉnh sửa
+    </a>
+    <button type="submit" class="btn btn-success mt-3 mx-3">Xác nhận</button>
 </form>
-
-

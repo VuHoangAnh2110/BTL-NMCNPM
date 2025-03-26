@@ -12,6 +12,9 @@ namespace BTL_NMCNPM.Data
         public DbSet<tblNhanVien> tblNhanVien { get; set; }
         public DbSet<tblHoSoNhanVien> tblHoSoNhanVien { get; set; }
         public DbSet<tblThongTinTuyenDung> tblThongTinTuyenDung { get; set; }
+        public DbSet<tblThongBao> tblThongBao { get; set; }
+        public DbSet<tblDanhSachUngTuyen> tblDanhSachUngTuyen { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +27,12 @@ namespace BTL_NMCNPM.Data
                 .HasOne(hs => hs.tblNhanVien)
                 .WithMany(nv => nv.tblHoSoNhanVien)
                 .HasForeignKey(hs => hs.sMaNV);
+
+            modelBuilder.Entity<tblDanhSachUngTuyen>()
+                .HasOne(d => d.tblHoSoNhanVien)
+                .WithMany(hs => hs.tblDanhSachUngTuyen)
+                .HasForeignKey(d => d.sMaNV);
+
         }
     }
 }

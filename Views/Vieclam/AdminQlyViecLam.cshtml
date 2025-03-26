@@ -1,24 +1,25 @@
-﻿@model List<BTL_CNPM.Models.tblThongTinTuyenDung>
+﻿@model List<BTL_NMCNPM.Models.tblThongTinTuyenDung>
 @{
     ViewBag.Title = "AdminQlyViecLam";
-    Layout = "~/Views/Shared/AccountMasterpage.cshtml";
+    Layout = "~/Views/Shared/AccountLayout.cshtml";
 }
 
-@if (Session["user"] != null)
+@if (Context.Session.GetString("user") != null)
 {
     <section>
         <h1>Quản lý việc làm</h1>
-        <form class="d-flex flex-row align-items-center flex-wrap" action="/Vieclam/AdminQlyViecLam">
+        <form class="d-flex flex-row align-items-center flex-wrap" asp-action="AdminQlyViecLam" asp-controller="Vieclam" method="get">
             <label for="search" class="mx-2 my-1">Tìm kiếm</label>
             <input type="search" class="form-control w-auto" id="search" name="search" placeholder="Nhập thông tin..." value="@ViewBag.search"/>
             <button type="submit" class="btn btn-primary mx-2">Tìm kiếm</button>
         </form>
 
-        <a class="btn btn-success" style="color: white; text-decoration: none; margin-top: 20px; margin-bottom:20px; margin-left: 10px;" href="/Vieclam/CreateViecLam">Tao tin tuyen dung moi</a>
-        <!-- TABLE CONSTRUCTION-->
+        <a asp-action="CreateViecLam" asp-controller="Vieclam" class="btn btn-success" style="color: white; text-decoration: none; margin-top: 20px; margin-bottom:20px; margin-left: 10px;">
+            Tạo tin tuyển dụng mới
+        </a>
+
         <table class="table table-striped table-hover">
             <tr>
-                <!-- TABLE HEADING -->
                 <th>Vị trí</th>
                 <th>Đối tượng</th>
                 <th>Ngày yêu cầu</th>
@@ -27,32 +28,26 @@
                 <th>Mức lương</th>
                 <th>Đãi ngộ</th>
                 <th>Nơi làm việc</th>
+                <th>Hành động</th>
             </tr>
-            <!-- TABLE DATA -->
             @foreach (var item in Model)
             {
                 <tr>
                     <td>@item.sVitri</td>
                     <td>@item.sDoituong</td>
-                    <td>@item.dNgayyeucau.Value.ToString("yyyy-MM-dd")</td>
-                    <td>@item.dNgayhethan.Value.ToString("yyyy-MM-dd")</td>
+                    <td>@(item.dNgayyeucau?.ToString("yyyy-MM-dd") ?? "Chưa có")</td>
+                    <td>@(item.dNgayhethan?.ToString("yyyy-MM-dd") ?? "Chưa có")</td>
                     <td>@item.sMotaTD</td>
                     <td>@item.iMucluong</td>
                     <td>@item.sDaingo</td>
                     <td>@item.sNoilamviec</td>
-                    @*<td>
-                        <button class="btn btn-info" data-toggle="modal" onclick="/Vieclam/EditViecLam/@item.sMaTD">Sửa</button>
-                        <button class="btn btn-danger" data-toggle="modal" onclick="/Vieclam/DeleteViecLam/@item.sMaTD">Xóa</button>
-                    </td>*@
-                </tr>
-                <tr>
-                    <td><a class="btn btn-primary" style="color: white; text-decoration: none;" href="/Vieclam/EditViecLam/@item.sMaTD">Sửa</a></td>
-                    <td><a class="btn btn-danger" style="color: white; text-decoration: none;" href="/Vieclam/DeleteViecLam/@item.sMaTD">Xóa</a></td>
-                    <td><a class="btn btn-info" style="color: white; text-decoration: none;" href="/Vieclam/DanhSachUngTuyen?sMaTD=@item.sMaTD">Danh sách ứng viên</a></td>
+                    <td>
+                        <a asp-action="EditViecLam" asp-controller="Vieclam" asp-route-id="@item.sMaTD" class="btn btn-primary">Sửa</a>
+                        <a asp-action="DeleteViecLam" asp-controller="Vieclam" asp-route-id="@item.sMaTD" class="btn btn-danger">Xóa</a>
+                        <a asp-action="DanhSachUngTuyen" asp-controller="Vieclam" asp-route-sMaTD="@item.sMaTD" class="btn btn-info">Danh sách ứng viên</a>
+                    </td>
                 </tr>
             }
-
-
         </table>
     </section>
 }
@@ -60,4 +55,3 @@ else
 {
     <p>Bạn không được truy cập vào trang hiện tại</p>
 }
-

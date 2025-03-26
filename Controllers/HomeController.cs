@@ -1,137 +1,118 @@
-﻿using BTL_CNPM.Models;
+﻿using BTL_NMCNPM.Data;
+using BTL_NMCNPM.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace BTL_CNPM.Controllers
+namespace BTL_NMCNPM.Controllers
 {
     public class HomeController : Controller
     {
-        // GET: Home
-        public ActionResult Index()
+        private readonly AppDbContext _context;
+        
+        public HomeController(AppDbContext context)
         {
-            return View();
-        }
-        public ActionResult About()
-        {
-            return View();
-        }
-        //trang joblist user view
-        public ActionResult JobList(string search = "")
-        {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            List<tblThongTinTuyenDung> listTTTuyendung = db.tblThongTinTuyenDung.Where(row => row.sVitri.Contains(search)).ToList();
-            ViewBag.search = search;
-            return View(listTTTuyendung);
+            _context = context;
         }
 
-        //Chi tiet viec lam user view
-        public ActionResult JobDetail(string id)
-        {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            tblThongTinTuyenDung TTTuyendung = db.tblThongTinTuyenDung.Where(row => row.sMaTD == id).FirstOrDefault();
-            return View(TTTuyendung);
-        }
-
-        public ActionResult Contact()
+        public IActionResult Index()
         {
             return View();
         }
 
-        //ho so ung vien user view
-        public ActionResult HoSoUngVien()
+        public IActionResult About()
         {
-            if (Session["MaTK"] == null)
-            {
-                return RedirectToAction("Login", "User");
-            }
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            string MaNV = Session["MaNV"].ToString();
-            tblNhanVien NhanVien = db.tblNhanVien.Where(row => row.sMaNV == MaNV).FirstOrDefault();
-            tblHoSoNhanVien HoSoNV = db.tblHoSoNhanVien.Where(row => row.sMaNV == NhanVien.sMaNV).FirstOrDefault();
-            if(HoSoNV != null)
-            {
-                return View(HoSoNV);
-            }
-
             return View();
+        }
+
+        public async Task<IActionResult> JobList(string search = "")
+        {
+            var jobs = await _context.tblThongTinTuyenDung
+                .Where(j => j.sVitri.Contains(search) || string.IsNullOrEmpty(search))
+                .ToListAsync();
+            
+            ViewBag.Search = search;
+            return View(jobs);
+        }
+
+        public async Task<IActionResult> JobDetail(string id)
+        {
+            var job = await _context.tblThongTinTuyenDung.FirstOrDefaultAsync(j => j.sMaTD == id);
+            return View(job);
+        }
+
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> HoSoUngVien()
+        {
+            string maNV = HttpContext.Session.GetString("MaNV");
+            if (string.IsNullOrEmpty(maNV)) return RedirectToAction("Login", "User");
+
+            var hoSo = await _context.tblHoSoNhanVien.FirstOrDefaultAsync(h => h.sMaNV == maNV);
+            return View(hoSo);
         }
 
         [HttpPost]
-        public ActionResult HoSoUngVien(tblHoSoNhanVien HosoNV)
+        public async Task<IActionResult> HoSoUngVien(tblHoSoNhanVien hoSoNV)
         {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-
-            tblNhanVien Nhanvien = new tblNhanVien();
-            Session["MaNV"] = HosoNV.sMaNV;
-            Nhanvien.sMaNV = Session["MaNV"].ToString();
-            Nhanvien.sMaTK = Session["MaTK"].ToString();
-
-            db.tblNhanVien.Add(Nhanvien);
-            db.tblHoSoNhanVien.Add(HosoNV);
-            db.SaveChanges();
+            string maNV = HttpContext.Session.GetString("MaNV");
+            string maTK = HttpContext.Session.GetString("MaTK");
+            
+            if (string.IsNullOrEmpty(maNV) || string.IsNullOrEmpty(maTK)) return RedirectToAction("Login", "User");
+            
+            _context.tblHoSoNhanVien.Add(hoSoNV);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        //chinh sua ho so user view
-        public ActionResult EditHoSo(string id)
+        public async Task<IActionResult> EditHoSo(string id)
         {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            tblHoSoNhanVien HoSoNV = db.tblHoSoNhanVien.Where(row => row.sMaNV == id).FirstOrDefault();
-            return View(HoSoNV);
+            var hoSo = await _context.tblHoSoNhanVien.FindAsync(id);
+            return View(hoSo);
         }
 
         [HttpPost]
-        public ActionResult EditHoSo(tblHoSoNhanVien hosoupdate, int id)
+        public async Task<IActionResult> EditHoSo(tblHoSoNhanVien hoSoUpdate, int id)
         {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            tblHoSoNhanVien Hoso = db.tblHoSoNhanVien.Where(row => row.iMaHoSoNV == id).FirstOrDefault();
-            Hoso.sTenNV = hosoupdate.sTenNV;
-            Hoso.sEmail = hosoupdate.sEmail;
-            Hoso.iCCCD = hosoupdate.iCCCD;
-            Hoso.dNgaysinh = hosoupdate.dNgaysinh;
-            Hoso.iSDT = hosoupdate.iSDT;
-            Hoso.sDiachi = hosoupdate.sDiachi;
-            Hoso.sHocvan = hosoupdate.sHocvan;
-            Hoso.sKinhnghiem = hosoupdate.sKinhnghiem;
-            db.SaveChanges();
+            var hoSo = await _context.tblHoSoNhanVien.FindAsync(id);
+            if (hoSo != null)
+            {
+                hoSo.sTenNV = hoSoUpdate.sTenNV;
+                hoSo.sEmail = hoSoUpdate.sEmail;
+                hoSo.iCCCD = hoSoUpdate.iCCCD;
+                hoSo.dNgaysinh = hoSoUpdate.dNgaysinh;
+                hoSo.iSDT = hoSoUpdate.iSDT;
+                hoSo.sDiachi = hoSoUpdate.sDiachi;
+                hoSo.sHocvan = hoSoUpdate.sHocvan;
+                hoSo.sKinhnghiem = hoSoUpdate.sKinhnghiem;
+
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction("HoSoUngVien");
         }
 
-        //them ung vien vao danh sach ung tuyen 
         [HttpGet]
-        public ActionResult ThemDanhSachUngTuyen(string sMaTD)
+        public async Task<IActionResult> ThemDanhSachUngTuyen(string sMaTD)
         {
-            string MaNV;
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            tblDanhSachUngTuyen danhSachUngTuyen = new tblDanhSachUngTuyen();
-            if(Session["MaNV"] == null)
-            {
-                return View("Contact");
-                //return RedirectToAction("ThongTinUngVien");
+            string maNV = HttpContext.Session.GetString("MaNV");
+            if (string.IsNullOrEmpty(maNV)) return RedirectToAction("Contact");
 
-            }
-            else
-            {
-                MaNV = Session["MaNV"].ToString();
-                danhSachUngTuyen.sMaTD = sMaTD;
-                danhSachUngTuyen.sMaNV = MaNV;
-                db.tblDanhSachUngTuyen.Add(danhSachUngTuyen);
-                db.SaveChanges();
-                return View("Index");
-            }
-        }
-   
-        //hien thi danh sach thong bao user view
-        public ActionResult Thongbao()
-        {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            if (Session["MaNV"] == null)
-            {
-                return RedirectToAction("Login", "User");
-            }
-            string maNV = Session["MaNV"].ToString();
-            List<tblThongBao> listThongbao = db.tblThongBao.Where(row => row.sMaNV == maNV).ToList();
-            return View(listThongbao);
+            var danhSachUngTuyen = new tblDanhSachUngTuyen { sMaTD = sMaTD, sMaNV = maNV };
+            _context.tblDanhSachUngTuyen.Add(danhSachUngTuyen);
+            await _context.SaveChangesAsync();
+            
+            return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> Thongbao()
+        {
+            string maNV = HttpContext.Session.GetString("MaNV");
+            if (string.IsNullOrEmpty(maNV)) return RedirectToAction("Login", "User");
+            
+            var thongBaoList = await _context.tblThongBao.Where(t => t.sMaNV == maNV).ToListAsync();
+            return View(thongBaoList);
+        }
     }
 }

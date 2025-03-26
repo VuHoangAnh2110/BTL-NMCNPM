@@ -9,6 +9,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Đăng ký IHttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
+// Đăng ký các service khác
+builder.Services.AddControllersWithViews();
 
 // Thêm dịch vụ Session
 builder.Services.AddDistributedMemoryCache(); 

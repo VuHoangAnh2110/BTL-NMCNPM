@@ -17,5 +17,8 @@ namespace BTL_NMCNPM.Models
 
         [ForeignKey("sMaTD")]
         public virtual tblThongTinTuyenDung tblThongTinTuyenDung { get; set; }
+
+        public tblHoSoNhanVien? tblHoSoNhanVien { get; set; } // Đảm bảo có navigation property
+
     }
 }

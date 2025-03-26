@@ -1,111 +1,116 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BTL_NMCNPM.Data;
+using BTL_NMCNPM.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using BTL_CNPM.Models;
+using System.Threading.Tasks;
 
-namespace BTL_CNPM.Controllers
+namespace BTL_NMCNPM.Controllers
 {
     public class VieclamController : Controller
     {
-        // GET: Vieclam admin view
-        public ActionResult AdminQlyViecLam(string search="")
+        private readonly AppDbContext _context;
+
+        public VieclamController(AppDbContext context)
         {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            List<tblThongTinTuyenDung> tblThongTinTuyenDung = db.tblThongTinTuyenDung.Where(row => row.sVitri.Contains(search)).ToList();
+            _context = context;
+        }
+
+        public async Task<IActionResult> AdminQlyViecLam(string search = "")
+        {
+            var jobs = await _context.tblThongTinTuyenDung
+                .Where(j => j.sVitri.Contains(search))
+                .ToListAsync();
             ViewBag.search = search;
-            return View(tblThongTinTuyenDung);
+            return View(jobs);
         }
 
-        //them tin tuyen dung admin view
-        public  ActionResult CreateVieclam()
+        public IActionResult CreateVieclam()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult CreateVieclam(tblThongTinTuyenDung CreateTuyendung)
+        public async Task<IActionResult> CreateVieclam(tblThongTinTuyenDung CreateTuyendung)
         {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            db.tblThongTinTuyenDung.Add(CreateTuyendung);
-            db.SaveChanges();
-            return RedirectToAction("AdminQlyViecLam");
-        }
-
-        //chinh sua tin tuyen dung admin view
-        public ActionResult EditViecLam(string id)
-        {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            tblThongTinTuyenDung TTTuyendung = db.tblThongTinTuyenDung.Where(row => row.sMaTD == id).FirstOrDefault();
-            return View(TTTuyendung);
-        }
-
-        [HttpPost]
-        public ActionResult EditViecLam(tblThongTinTuyenDung tuyendungupdate)
-        {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            tblThongTinTuyenDung TTTuyendung = db.tblThongTinTuyenDung.Where(row => row.sMaTD == tuyendungupdate.sMaTD).FirstOrDefault();
-            TTTuyendung.sMaTD = tuyendungupdate.sMaTD;
-            TTTuyendung.sVitri = tuyendungupdate.sVitri;
-            TTTuyendung.sDoituong = tuyendungupdate.sDoituong;
-            TTTuyendung.dNgayyeucau = tuyendungupdate.dNgayyeucau;
-            TTTuyendung.dNgayhethan = tuyendungupdate.dNgayhethan;
-            TTTuyendung.sMotaTD = tuyendungupdate.sMotaTD;
-            TTTuyendung.iMucluong = tuyendungupdate.iMucluong;
-            TTTuyendung.sDaingo = tuyendungupdate.sDaingo;
-            TTTuyendung.sNoilamviec = tuyendungupdate.sNoilamviec;
-            db.SaveChanges();
-            return RedirectToAction("AdminQlyViecLam");
-        }
-
-        //xoa tin tuyen dung admin view
-        public ActionResult DeleteViecLam(string id)
-        {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            tblThongTinTuyenDung TTTuyendung = db.tblThongTinTuyenDung.Where(row => row.sMaTD == id).FirstOrDefault();
-            return View(TTTuyendung);
-        }
-
-        [HttpPost]
-        public ActionResult DeleteVieclam(string id, tblThongTinTuyenDung thongTinTuyenDung)
-        {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            tblThongTinTuyenDung TTTuyendungDelete = db.tblThongTinTuyenDung.Where(row => row.sMaTD == id).FirstOrDefault();
-            db.tblThongTinTuyenDung.Remove(TTTuyendungDelete);
-            db.SaveChanges();
-            return RedirectToAction("AdminQlyViecLam");
-        }
-
-        //Danh sach nguoi ung tuyen moi cong viec admin view
-        public ActionResult DanhSachUngTuyen(string sMaTD)
-        {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            List<tblDanhSachUngTuyen> listDanhSachUngTuyen = db.tblDanhSachUngTuyen.Where(row => row.sMaTD == sMaTD).ToList();
-            List<tblHoSoNhanVien> listHoSoUngTuyen = new List<tblHoSoNhanVien>();
-            foreach(var item in listDanhSachUngTuyen)
+            if (ModelState.IsValid)
             {
-                tblHoSoNhanVien HosoNV = db.tblHoSoNhanVien.Where(row => row.sMaNV == item.sMaNV).FirstOrDefault();
-                listHoSoUngTuyen.Add(HosoNV);
+                await _context.tblThongTinTuyenDung.AddAsync(CreateTuyendung);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Thêm tin tuyển dụng thành công!";
+                return RedirectToAction("AdminQlyViecLam");
             }
-            return View(listHoSoUngTuyen);
+            return View(CreateTuyendung);
         }
 
-        //admin gui thong bao cho ung vien (admin)
-        public ActionResult Guithongbao(string sMaNV)
+        public async Task<IActionResult> EditViecLam(string id)
         {
-            string maNV = sMaNV;
-            ViewBag.maNV = maNV;
+            var job = await _context.tblThongTinTuyenDung.FindAsync(id);
+            if (job == null) return NotFound();
+            return View(job);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditViecLam(tblThongTinTuyenDung tuyendungupdate)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.tblThongTinTuyenDung.Update(tuyendungupdate);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Cập nhật tin tuyển dụng thành công!";
+                return RedirectToAction("AdminQlyViecLam");
+            }
+            return View(tuyendungupdate);
+        }
+
+        public async Task<IActionResult> DeleteViecLam(string id)
+        {
+            var job = await _context.tblThongTinTuyenDung.FindAsync(id);
+            if (job == null) return NotFound();
+            return View(job);
+        }
+
+        [HttpPost, ActionName("DeleteViecLam")]
+        public async Task<IActionResult> ConfirmDelete(string id)
+        {
+            var job = await _context.tblThongTinTuyenDung.FindAsync(id);
+            if (job != null)
+            {
+                _context.tblThongTinTuyenDung.Remove(job);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Xóa tin tuyển dụng thành công!";
+            }
+            return RedirectToAction("AdminQlyViecLam");
+        }
+
+        public async Task<IActionResult> DanhSachUngTuyen(string sMaTD)
+        {
+            var applicants = await _context.tblDanhSachUngTuyen
+                .Where(a => a.sMaTD == sMaTD)
+                .Select(a => _context.tblHoSoNhanVien.FirstOrDefault(hs => hs.sMaNV == a.sMaNV))
+                .Where(hs => hs != null)
+                .ToListAsync();
+
+            return View(applicants);
+        }
+
+        public IActionResult Guithongbao(string sMaNV)
+        {
+            ViewBag.maNV = sMaNV;
             return View();
         }
 
         [HttpPost]
-        public ActionResult Guithongbao(tblThongBao thongBao)
+        public async Task<IActionResult> Guithongbao(tblThongBao thongBao)
         {
-            QlyViecLamEntities1 db = new QlyViecLamEntities1();
-            db.tblThongBao.Add(thongBao);
-            db.SaveChanges();
-            return RedirectToAction("AdminQlyViecLam");
+            if (ModelState.IsValid)
+            {
+                await _context.tblThongBao.AddAsync(thongBao);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Gửi thông báo thành công!";
+                return RedirectToAction("AdminQlyViecLam");
+            }
+            return View(thongBao);
         }
     }
 }

@@ -8,23 +8,23 @@ namespace BTL_NMCNPM.Models
     public class tblThongTinTuyenDung
     {
         [Key]
-        public string sMaTD { get; set; }
+        public string? sMaTD { get; set; }
 
-        public string sDoituong { get; set; }
+        public string? sDoituong { get; set; }
 
         public DateTime? dNgayyeucau { get; set; }
 
         public DateTime? dNgayhethan { get; set; }
 
-        public string sMotaTD { get; set; }
+        public string? sMotaTD { get; set; }
 
         public int? iMucluong { get; set; }
 
-        public string sDaingo { get; set; }
+        public string? sDaingo { get; set; }
 
-        public string sNoilamviec { get; set; }
+        public string? sNoilamviec { get; set; }
 
-        public string sVitri { get; set; }
+        public string? sVitri { get; set; }
 
         public virtual ICollection<tblDanhSachUngTuyen> tblDanhSachUngTuyen { get; set; } = new HashSet<tblDanhSachUngTuyen>();
     }

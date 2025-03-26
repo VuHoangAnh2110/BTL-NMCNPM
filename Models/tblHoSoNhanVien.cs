@@ -13,5 +13,9 @@ namespace BTL_NMCNPM.Models
         public string? sHocvan { get; set; }
         public string? sKinhnghiem { get; set; }
         public tblNhanVien tblNhanVien { get; set; }
+
+        // Thêm thuộc tính này để thiết lập quan hệ nhiều
+        public ICollection<tblDanhSachUngTuyen>? tblDanhSachUngTuyen { get; set; }
+        
     }
 }

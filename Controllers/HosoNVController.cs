@@ -1,83 +1,103 @@
-﻿using System;
+﻿using BTL_NMCNPM.Data;
+using BTL_NMCNPM.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using BTL_CNPM.Models;
+using System.Threading.Tasks;
 
-namespace BTL_CNPM.Controllers
+namespace BTL_NMCNPM.Controllers
 {
     public class HosoNVController : Controller
     {
-        // GET: HosoNV
-        public ActionResult Index()
+        private readonly AppDbContext _context;
+
+        public HosoNVController(AppDbContext context)
         {
-            HosonhanvienNMCNPMEntities db = new HosonhanvienNMCNPMEntities();
-            List<HOSONHANVIEN> hosoNV = db.HOSONHANVIEN.ToList();
+            _context = context;
+        }
+
+        // GET: Danh sách hồ sơ nhân viên
+        public async Task<IActionResult> Index()
+        {
+            var hosoNV = await _context.tblHoSoNhanVien.ToListAsync();
             return View(hosoNV);
         }
 
-        //tao ho so
-        public ActionResult TaoHoso()
+        // GET: Trang tạo hồ sơ nhân viên
+        public IActionResult TaoHoso()
         {
             return View();
         }
 
         [HttpPost]
-
-        public ActionResult TaoHoso(HOSONHANVIEN hosoNV)
+        public async Task<IActionResult> TaoHoso(tblHoSoNhanVien hosoNV)
         {
-            HosonhanvienNMCNPMEntities db = new HosonhanvienNMCNPMEntities();
-            db.HOSONHANVIEN.Add(hosoNV);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                _context.tblHoSoNhanVien.Add(hosoNV);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(hosoNV);
         }
 
-        //chinh sua ho so
-        public ActionResult Edit(int id)
+        // GET: Chỉnh sửa hồ sơ nhân viên
+        public async Task<IActionResult> Edit(string id)
         {
-            HosonhanvienNMCNPMEntities db = new HosonhanvienNMCNPMEntities();
-            HOSONHANVIEN hosoNV = db.HOSONHANVIEN.Where(row => row.MANHANVIEN == id).FirstOrDefault();
+            if (string.IsNullOrEmpty(id)) return NotFound();
+
+            var hosoNV = await _context.tblHoSoNhanVien.FindAsync(id);
+            if (hosoNV == null) return NotFound();
+
             return View(hosoNV);
         }
 
         [HttpPost]
-        public ActionResult Edit(HOSONHANVIEN hsNVupdate)
+        public async Task<IActionResult> Edit(tblHoSoNhanVien hsNVupdate)
         {
-            HosonhanvienNMCNPMEntities db = new HosonhanvienNMCNPMEntities();
-            HOSONHANVIEN hosoNV = db.HOSONHANVIEN.Where(row => row.MANHANVIEN == hsNVupdate.MANHANVIEN).FirstOrDefault();
-            //update
-            hosoNV.MANHANVIEN = hsNVupdate.MANHANVIEN;
-            hosoNV.MAHOSO = hsNVupdate.MAHOSO;
-            hosoNV.TENNHANVIEN = hsNVupdate.TENNHANVIEN;
-            hosoNV.NGAYLAP = hsNVupdate.NGAYLAP;
-            hosoNV.VITRI = hsNVupdate.VITRI;
-            hosoNV.CCCD = hsNVupdate.CCCD;
-            hosoNV.NGAYSINH = hsNVupdate.NGAYSINH;
-            hosoNV.SDT = hsNVupdate.SDT;
-            hosoNV.DIACHI = hsNVupdate.DIACHI;
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                var hosoNV = await _context.tblHoSoNhanVien.FindAsync(hsNVupdate.sMaNV);
+                if (hosoNV == null) return NotFound();
+
+                // Cập nhật thông tin
+                hosoNV.sTenNV = hsNVupdate.sTenNV;
+                hosoNV.sEmail = hsNVupdate.sEmail;
+                hosoNV.iCCCD = hsNVupdate.iCCCD;
+                hosoNV.dNgaysinh = hsNVupdate.dNgaysinh;
+                hosoNV.iSDT = hsNVupdate.iSDT;
+                hosoNV.sDiachi = hsNVupdate.sDiachi;
+                hosoNV.sHocvan = hsNVupdate.sHocvan;
+                hosoNV.sKinhnghiem = hsNVupdate.sKinhnghiem;
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(hsNVupdate);
         }
 
-
-        //xoa ho so
-        public ActionResult Delete(int id)
+        // GET: Xóa hồ sơ nhân viên
+        public async Task<IActionResult> Delete(string id)
         {
-            HosonhanvienNMCNPMEntities db = new HosonhanvienNMCNPMEntities();
-            HOSONHANVIEN hosoNV = db.HOSONHANVIEN.Where(row => row.MANHANVIEN == id).FirstOrDefault();
+            if (string.IsNullOrEmpty(id)) return NotFound();
+
+            var hosoNV = await _context.tblHoSoNhanVien.FindAsync(id);
+            if (hosoNV == null) return NotFound();
+
             return View(hosoNV);
         }
 
         [HttpPost]
-
-        public ActionResult Delete(int id, HOSONHANVIEN hsNV)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            HosonhanvienNMCNPMEntities db = new HosonhanvienNMCNPMEntities();
-            HOSONHANVIEN hosoNV = db.HOSONHANVIEN.Where(row => row.MANHANVIEN == id).FirstOrDefault();
-            db.HOSONHANVIEN.Remove(hosoNV);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            var hosoNV = await _context.tblHoSoNhanVien.FindAsync(id);
+            if (hosoNV != null)
+            {
+                _context.tblHoSoNhanVien.Remove(hosoNV);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }
