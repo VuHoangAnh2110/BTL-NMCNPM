@@ -3,7 +3,8 @@
     Layout = "~/Views/Shared/AccountLayout.cshtml";
 }
 
-@if (User.Identity.IsAuthenticated)
+@* @if (User.Identity.IsAuthenticated) *@
+@if (Context.Session.GetString("user") != null) 
 {
     <section>
         <h1>Quản lý Tài khoản</h1>
