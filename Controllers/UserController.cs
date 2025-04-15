@@ -38,7 +38,23 @@ namespace BTL_NMCNPM.Controllers
                 sTinhTrang = "Xem xét"
             };
 
+            var nv = new tblNhanVien
+            {
+                sMaNV = newID,
+                sMaTK = newID,
+            };
+
+            var hsnv = new tblHoSoNhanVien 
+            {
+                sMaNV = newID,
+                sTenNV = name,
+            };
+
             _context.tblTaiKhoan.Add(tk);
+            await _context.SaveChangesAsync();
+            _context.tblNhanVien.Add(nv);
+            await _context.SaveChangesAsync();
+            _context.tblHoSoNhanVien.Add(hsnv);
             await _context.SaveChangesAsync();
 
             HttpContext.Session.SetString("user", taikhoan);
@@ -77,8 +93,10 @@ namespace BTL_NMCNPM.Controllers
                 var currentNV = await _context.tblNhanVien
                     .Where(row => row.sMaTK == user.sMaTK)
                     .FirstOrDefaultAsync();
-
-                HttpContext.Session.SetString("MaNV", currentNV?.sMaNV ?? "");
+                
+                Console.WriteLine(currentNV.sMaNV);
+                
+                HttpContext.Session.SetString("MaNV", currentNV.sMaNV ?? "");
                 return RedirectToAction("Index", "Home");
             }
         }

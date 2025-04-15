@@ -26,6 +26,9 @@ namespace BTL_NMCNPM.Models
 
         public string? sVitri { get; set; }
 
-        public virtual ICollection<tblDanhSachUngTuyen> tblDanhSachUngTuyen { get; set; } = new HashSet<tblDanhSachUngTuyen>();
+        [InverseProperty("ThongTinTuyenDung")]
+        public virtual ICollection<tblDanhSachUngTuyen> DanhSachUngTuyen { get; set; } = new List<tblDanhSachUngTuyen>();
+
+
     }
 }

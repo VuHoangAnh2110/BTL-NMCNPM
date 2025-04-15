@@ -18,6 +18,8 @@ namespace BTL_NMCNPM.Models
         public virtual ICollection<tblHoSoNhanVien>? tblHoSoNhanVien { get; set; }
 
         // Một nhân viên có thể ứng tuyển nhiều lần
-        public virtual ICollection<tblDanhSachUngTuyen>? tblDanhSachUngTuyen { get; set; }
+        [InverseProperty("NhanVien")]
+        public virtual ICollection<tblDanhSachUngTuyen> DanhSachUngTuyen { get; set; } = new List<tblDanhSachUngTuyen>();
+        
     }
 }
